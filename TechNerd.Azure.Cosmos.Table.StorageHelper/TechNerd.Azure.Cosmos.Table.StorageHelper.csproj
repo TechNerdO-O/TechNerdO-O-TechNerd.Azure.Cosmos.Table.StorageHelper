@@ -2,6 +2,39 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>TechNerd.Azure.Cosmos.Table.StorageHelper</PackageId>
+    <Version>2.0.2</Version>
+    <Authors>TechNerd</Authors>
+    <Company>TechNerd</Company>
+    <Description>An efficient helper SDK, which helps in CRUD operations on the azure storage tables.It can be simply injected in .Net core applications</Description>
+    <Copyright>TechNerd</Copyright>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <PackageIcon>LogoWithText.png</PackageIcon>
+    <RepositoryUrl>https://github.com/TechNerdO-O/TechNerdO-O-TechNerd.Azure.Cosmos.Table.StorageHelper</RepositoryUrl>
+    <RepositoryType>Public</RepositoryType>
+    <PackageReleaseNotes>Bug fixing</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="NuGetFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="NuGetFiles\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="NuGetFiles\LogoWithText.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
 
 </Project>
