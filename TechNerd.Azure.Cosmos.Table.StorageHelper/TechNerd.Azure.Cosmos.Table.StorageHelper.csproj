@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <PackageId>TechNerd.Azure.Cosmos.Table.StorageHelper</PackageId>
     <Version>2.0.2</Version>
     <Authors>TechNerd</Authors>
