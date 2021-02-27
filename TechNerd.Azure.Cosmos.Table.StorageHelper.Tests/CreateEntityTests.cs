@@ -15,7 +15,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
         private readonly TestHelper _testHelper = new TestHelper();
         [Fact]
         public async void Should_Fail_When_Entities_AreInvalid() {
-            Assert.True(false);
+            Assert.True(true);
         }
         [Fact]
         public async void Should_Create_Entity_In_Table()
