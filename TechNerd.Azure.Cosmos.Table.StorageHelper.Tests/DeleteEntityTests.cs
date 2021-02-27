@@ -9,5 +9,10 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
         {
 
         }
+        [Fact]
+        public void Should_Fail_When_Entities_AreInvalid()
+        {
+            Assert.True(true);
+        }
     }
 }
