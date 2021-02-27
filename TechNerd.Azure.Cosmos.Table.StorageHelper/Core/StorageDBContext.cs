@@ -23,7 +23,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
 
             //Table  
             CloudTable table = tableClient.GetTableReference(tableName);
-            //await table.CreateIfNotExistsAsync();
+            await table.CreateIfNotExistsAsync();
 
             return table;
         }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TechNerd.Azure.Cosmos.Table.StorageHelper.DTO
+﻿namespace TechNerd.Azure.Cosmos.Table.StorageHelper.DTO
 {
     public class StorageConfig
     {

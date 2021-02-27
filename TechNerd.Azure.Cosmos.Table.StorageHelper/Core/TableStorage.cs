@@ -34,7 +34,8 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
             }
             catch (Exception ex)
             {
-
+                storageActionResult = new StorageActionResult(false, 
+                    new Error(HttpStatusCode.BadRequest,ex.Message));
             }
             return storageActionResult;
         }

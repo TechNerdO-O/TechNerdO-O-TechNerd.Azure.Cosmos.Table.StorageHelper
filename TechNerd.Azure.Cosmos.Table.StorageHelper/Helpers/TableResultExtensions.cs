@@ -21,9 +21,8 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Helpers
                 default:
                     result = new StorageActionResult(isSuccess: false, error:
                         new Error((HttpStatusCode)tableResult.HttpStatusCode,
-                        "Unable to complete the requested operation."));
-                    throw new HttpRequestException(
-                        $"Something went wrong in table operation, a {tableResult.HttpStatusCode} status code was returned.");
+                        Constants.ErrorMessges.TableOperationFailure));
+                    break;
             }
             return result;
         }

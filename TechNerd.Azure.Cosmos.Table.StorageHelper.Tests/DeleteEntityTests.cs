@@ -5,8 +5,9 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
     public class DeleteEntityTests
     {
         [Fact]
-        public async void Should_Delete_Entity_From_Table()
+        public void Should_Delete_Entity_From_Table()
         {
+
         }
     }
 }
