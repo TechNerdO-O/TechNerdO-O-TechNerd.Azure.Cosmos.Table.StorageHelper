@@ -1,13 +1,10 @@
 ﻿namespace TechNerd.Azure.Cosmos.Table.StorageHelper.DTO
 {
-    public class StorageActionResult
+    public class StorageActionResult : BaseResponse
     {
-        public bool IsSuccess { get; }
-        public Error Error { get; set; }
         public StorageActionResult(bool isSuccess, Error error = null)
+            : base(isSuccess, error)
         {
-            IsSuccess = isSuccess;
-            Error = error;
         }
     }
 }

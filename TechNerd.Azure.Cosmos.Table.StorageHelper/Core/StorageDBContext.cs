@@ -1,6 +1,9 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
+using System;
+using System.Net;
 using System.Threading.Tasks;
 using TechNerd.Azure.Cosmos.Table.StorageHelper.DTO;
+using TechNerd.Azure.Cosmos.Table.StorageHelper.Helpers;
 using TechNerd.Azure.Cosmos.Table.StorageHelper.Interfaces;
 
 namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
@@ -12,20 +15,26 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
         {
             _config = config;
         }
-        public async Task<CloudTable> GetTableAsync(string tableName)
+        public async Task<DBContextResult> GetTableAsync(string tableName)
         {
-            //Account  
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-                new StorageCredentials(_config.StorageAccount, _config.StorageKey), false);
-
-            //Client  
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-            //Table  
-            CloudTable table = tableClient.GetTableReference(tableName);
-            await table.CreateIfNotExistsAsync();
-
-            return table;
+            CloudTable table;
+            try
+            {
+                //Account
+                CloudStorageAccount storageAccount = new CloudStorageAccount(
+                        new StorageCredentials(_config.StorageAccount, _config.StorageKey), true);
+                //Client  
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+                //Table  
+                table = tableClient.GetTableReference(tableName);
+                await table.CreateIfNotExistsAsync();
+            }
+            catch (Exception ex)
+            {
+                return new DBContextResult(null, false, new Error(HttpStatusCode.BadRequest,
+                    string.Format(Constants.ErrorMessges.UnableToCreateTable, ex.Message)));
+            }
+            return new DBContextResult(table, true);
         }
     }
 }

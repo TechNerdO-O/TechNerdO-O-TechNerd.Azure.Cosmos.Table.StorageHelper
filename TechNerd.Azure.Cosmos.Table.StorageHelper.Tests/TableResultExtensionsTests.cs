@@ -39,7 +39,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
             var result = TableResultExtensions.EnsureSuccessStatusCode(mockTableResult);
             Assert.False(result.IsSuccess);
             Assert.Equal(HttpStatusCode.BadRequest, result.Error.ErrorCode);
-            Assert.Equal(Constants.ErrorMessges.TableOperationFailure,result.Error.Message);
+            Assert.Equal(Constants.ErrorMessges.TableOperationFailure, result.Error.Message);
         }
     }
 }

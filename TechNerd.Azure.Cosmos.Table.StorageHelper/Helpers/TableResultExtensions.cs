@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using System.Net;
-using System.Net.Http;
 using TechNerd.Azure.Cosmos.Table.StorageHelper.DTO;
 
 namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Helpers

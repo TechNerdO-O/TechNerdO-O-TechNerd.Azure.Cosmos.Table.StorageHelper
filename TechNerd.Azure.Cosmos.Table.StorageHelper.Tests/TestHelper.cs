@@ -17,6 +17,10 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
             return testEntity;
         }
 
+        public class NullableEntity : Entity<string>
+        {
+
+        }
         public class TestEntity : Entity<Guid>
         {
             public string Email { get; set; }

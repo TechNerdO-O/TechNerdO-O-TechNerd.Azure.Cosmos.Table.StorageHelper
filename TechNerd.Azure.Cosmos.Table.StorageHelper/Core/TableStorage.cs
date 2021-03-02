@@ -18,14 +18,28 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
             _dbContext = dBContext;
             _tableName = tableName;
         }
+        private StorageActionResult ValidateEntityModel(TEntity entity)
+        {
+            if (entity.Id == null)
+                return new StorageActionResult(false, new Error(HttpStatusCode.BadRequest, Constants.ErrorMessges.NullReferenceForId));
+            if (entity.RowKey == null)
+                entity.RowKey = entity.Id.ToString();
+            if (entity.PartitionKey == null)
+                entity.PartitionKey = entity.Id.ToString();
+            return new StorageActionResult(true);
+        }
         public async Task<StorageActionResult> CreateAsync(TEntity entity)
         {
-            StorageActionResult storageActionResult = null;
+            StorageActionResult storageActionResult;
             try
             {
-                entity.RowKey = entity.Id.ToString();
-                entity.PartitionKey = entity.Id.ToString();
-                CloudTable cloudTable = await _dbContext.GetTableAsync(_tableName);
+                var validationResult = ValidateEntityModel(entity);
+                if (!validationResult.IsSuccess)
+                    return validationResult;
+                DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+                if (!dBContextResult.IsSuccess)
+                    return new StorageActionResult(false, dBContextResult.Error);
+                CloudTable cloudTable = dBContextResult.Table;
                 var tableOperation =
                    TableOperation.Insert(entity);
                 var tableResult =
@@ -34,8 +48,9 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
             }
             catch (Exception ex)
             {
-                storageActionResult = new StorageActionResult(false, 
-                    new Error(HttpStatusCode.BadRequest,ex.Message));
+                storageActionResult = new StorageActionResult(false,
+                    new Error(HttpStatusCode.BadRequest,
+                    string.Format(Constants.ErrorMessges.TableOperationFailure, ex.Message)));
             }
             return storageActionResult;
         }
@@ -48,8 +63,10 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
             if (entity == null)
                 return new StorageActionResult(false,
                 new Error(HttpStatusCode.NotFound, "Id not found"));
-
-            CloudTable cloudTable = await _dbContext.GetTableAsync(_tableName);
+            DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+            if (!dBContextResult.IsSuccess)
+                return new StorageActionResult(false, dBContextResult.Error);
+            CloudTable cloudTable = dBContextResult.Table;
             var tableOperation =
                TableOperation.Delete(entity);
             var tableResult =
@@ -60,7 +77,10 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
 
         public async Task<TEntity> ReadByIdAsync(TKey id)
         {
-            CloudTable cloudTable = await _dbContext.GetTableAsync(_tableName);
+            DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+            if (!dBContextResult.IsSuccess)
+                return null;
+            CloudTable cloudTable = dBContextResult.Table;
             var tableOperation =
                 TableOperation.Retrieve<TEntity>(id.ToString(), id.ToString());
 
@@ -79,7 +99,10 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
 
         public async Task<StorageActionResult> Update(TEntity entity)
         {
-            CloudTable cloudTable = await _dbContext.GetTableAsync(_tableName);
+            DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+            if (!dBContextResult.IsSuccess)
+                return new StorageActionResult(false, dBContextResult.Error);
+            CloudTable cloudTable = dBContextResult.Table;
             var tableOperation =
                  TableOperation.InsertOrReplace(entity);
 
