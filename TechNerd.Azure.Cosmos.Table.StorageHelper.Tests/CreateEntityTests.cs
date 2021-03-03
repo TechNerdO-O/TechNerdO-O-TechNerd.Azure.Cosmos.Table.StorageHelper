@@ -102,7 +102,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
             Assert.Equal(passedEntity.Id.ToString(), testEntity.PartitionKey);
         }
         [Fact]
-        public async Task Should_NotReplace_RowAndPartitionKey_WithID_When_RowAndPartitionKey_AreNotNull()
+        public async Task Should_NotReplace_PartitionKey_WithID_When_PartitionKey_IsExplicitlyMentioned()
         {
             //Arrange
             TestEntity passedEntity = null;
@@ -131,7 +131,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
             Assert.Equal(passedEntity.CreatedOn, testEntity.CreatedOn);
             Assert.Equal(passedEntity.Name, testEntity.Name);
             Assert.Equal(passedEntity.Email, testEntity.Email);
-            Assert.Equal("SuppliedValue", testEntity.RowKey);
+            Assert.Equal(passedEntity.Id.ToString(), testEntity.RowKey);
             Assert.Equal("SuppliedValue", testEntity.PartitionKey);
         }
     }

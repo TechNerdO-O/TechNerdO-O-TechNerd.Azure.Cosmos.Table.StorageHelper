@@ -1,11 +1,14 @@
-﻿namespace TechNerd.Azure.Cosmos.Table.StorageHelper.DTO
+﻿using TechNerd.Azure.Cosmos.Table.StorageHelper.Interfaces;
+
+namespace TechNerd.Azure.Cosmos.Table.StorageHelper.DTO
 {
-    public class ReadActionResult : BaseResponse
+    public class ReadActionResult<TKey, TEntity> : BaseResponse where TEntity : IEntity<TKey>
     {
-        public int MyProperty { get; set; }
-        public ReadActionResult(bool isSuccess, Error error = null)
+        public TEntity Entity { get; }
+        public ReadActionResult(TEntity entity, bool isSuccess, Error error = null)
             : base(isSuccess, error)
         {
+            Entity = entity;
         }
     }
 }

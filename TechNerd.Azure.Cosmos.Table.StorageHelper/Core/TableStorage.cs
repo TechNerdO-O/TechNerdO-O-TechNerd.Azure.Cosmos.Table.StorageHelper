@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using TechNerd.Azure.Cosmos.Table.StorageHelper.DTO;
@@ -22,8 +23,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
         {
             if (entity.Id == null)
                 return new StorageActionResult(false, new Error(HttpStatusCode.BadRequest, Constants.ErrorMessges.NullReferenceForId));
-            if (entity.RowKey == null)
-                entity.RowKey = entity.Id.ToString();
+            entity.RowKey = entity.Id.ToString();
             if (entity.PartitionKey == null)
                 entity.PartitionKey = entity.Id.ToString();
             return new StorageActionResult(true);
@@ -55,10 +55,68 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
             return storageActionResult;
         }
 
-        public async Task<StorageActionResult> DeleteByIdAsync(TKey id)
+        public async Task<ReadActionResult<TKey, TEntity>> ReadByIdAsync(string partitionKey, TKey id)
+        {
+            TableResult tableResult;
+            try
+            {
+                DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+                if (!dBContextResult.IsSuccess)
+                    return new ReadActionResult<TKey, TEntity>(null, false, dBContextResult.Error);
+                CloudTable cloudTable = dBContextResult.Table;
+                var tableOperation =
+                    TableOperation.Retrieve<TEntity>(partitionKey, id.ToString());
+                tableResult =
+                   await cloudTable.ExecuteAsync(tableOperation);
+                if (tableResult.HttpStatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    return new ReadActionResult<TKey, TEntity>(null, false, new Error(HttpStatusCode.NotFound,
+                        Constants.ErrorMessges.EntityIdNotFound));
+                }
+                tableResult.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                return new ReadActionResult<TKey, TEntity>(null, false, new Error(HttpStatusCode.BadRequest,
+                    string.Format(Constants.ErrorMessges.TableOperationFailure, ex.Message)));
+            }
+            return new ReadActionResult<TKey, TEntity>((TEntity)tableResult.Result, true);
+        }
+
+        public async Task<ReadByQueryActionResult<TKey, TEntity>> ReadByQueryAsync(string query = null)
+        {
+            var entityList = new List<TEntity>();
+            try
+            {
+                DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+                if (!dBContextResult.IsSuccess)
+                    return new ReadByQueryActionResult<TKey, TEntity>(null, false, dBContextResult.Error);
+                CloudTable cloudTable = dBContextResult.Table;
+                var tableQuery = new TableQuery<TEntity>();
+                if (!string.IsNullOrWhiteSpace(query))
+                {
+                    tableQuery = new TableQuery<TEntity>().Where(query);
+                }
+                var continuationToken = default(TableContinuationToken);
+                do
+                {
+                    var tableQuerySegement = await cloudTable.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
+                    continuationToken = tableQuerySegement.ContinuationToken;
+                    entityList.AddRange(tableQuerySegement.Results);
+                }
+                while (continuationToken != null);
+            }
+            catch (Exception ex)
+            {
+                return new ReadByQueryActionResult<TKey, TEntity>(null, false, new Error(HttpStatusCode.BadRequest,
+                       string.Format(Constants.ErrorMessges.TableOperationFailure, ex.Message)));
+            }
+            return new ReadByQueryActionResult<TKey, TEntity>(entityList, true);
+        }
+        public async Task<StorageActionResult> DeleteByIdAsync(string partitionKey, TKey id)
         {
             var entity =
-                await this.ReadByIdAsync(id);
+                await this.ReadByIdAsync(partitionKey, id);
 
             if (entity == null)
                 return new StorageActionResult(false,
@@ -68,34 +126,13 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
                 return new StorageActionResult(false, dBContextResult.Error);
             CloudTable cloudTable = dBContextResult.Table;
             var tableOperation =
-               TableOperation.Delete(entity);
+               TableOperation.Delete((ITableEntity)entity);
             var tableResult =
                await cloudTable.ExecuteAsync(tableOperation);
 
             return tableResult.EnsureSuccessStatusCode();
         }
 
-        public async Task<TEntity> ReadByIdAsync(TKey id)
-        {
-            DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
-            if (!dBContextResult.IsSuccess)
-                return null;
-            CloudTable cloudTable = dBContextResult.Table;
-            var tableOperation =
-                TableOperation.Retrieve<TEntity>(id.ToString(), id.ToString());
-
-            var tableResult =
-                await cloudTable.ExecuteAsync(tableOperation);
-
-            if (tableResult.HttpStatusCode == (int)HttpStatusCode.NotFound)
-            {
-                return null;
-            }
-
-            tableResult.EnsureSuccessStatusCode();
-
-            return tableResult.Result as TEntity;
-        }
 
         public async Task<StorageActionResult> Update(TEntity entity)
         {
@@ -111,5 +148,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
 
             return tableResult.EnsureSuccessStatusCode();
         }
+
+
     }
 }
