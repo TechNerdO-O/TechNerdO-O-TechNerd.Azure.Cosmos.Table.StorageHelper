@@ -9,7 +9,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Interfaces
         Task<StorageActionResult> CreateAsync(TEntity entity);
         Task<ReadActionResult<TKey, TEntity>> ReadByIdAsync(string partitionKey, TKey id);
         Task<ReadByQueryActionResult<TKey, TEntity>> ReadByQueryAsync(string query = null);
-        Task<StorageActionResult> Update(TEntity entity);
+        Task<StorageActionResult> UpdateAsync(TEntity entity);
         Task<StorageActionResult> DeleteByIdAsync(string partitionKey, TKey id);
     }
 }

@@ -138,7 +138,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
         }
 
 
-        public async Task<StorageActionResult> Update(TEntity entity)
+        public async Task<StorageActionResult> UpdateAsync(TEntity entity)
         {
             StorageActionResult storageActionResult;
             try

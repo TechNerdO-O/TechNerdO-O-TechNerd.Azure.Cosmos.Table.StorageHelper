@@ -46,7 +46,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
                         .Returns(Task.FromResult(new DBContextResult(mockAzureTable.Object, true)));
             ITableStorage<Guid, TestEntity> testTable = new TableStorage<Guid, TestEntity>("users", mockDBContext.Object);
             //Act
-            var result = await testTable.Update(inputEntity);
+            var result = await testTable.UpdateAsync(inputEntity);
             //Assert
             mockAzureTable.Verify(op => op.ExecuteAsync(It.Is<TableOperation>(x => x.OperationType == TableOperationType.InsertOrReplace
          && x.Entity == inputEntity)), Times.Once);

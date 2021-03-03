@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechNerd.Azure.Cosmos.Table
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{95C34890-67C5-46B6-AD93-066EB69D8D2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechNerd.Azure.Cosmos.Table.StorageHelper.Consumer", "TechNerd.Azure.Cosmos.Table.StorageHelper.Consumer\TechNerd.Azure.Cosmos.Table.StorageHelper.Consumer.csproj", "{35E1B5B9-D4DA-443E-B766-52B0B14D680B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{FAB546E6-49B2-419D-9033-CF9B8FF6B7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAB546E6-49B2-419D-9033-CF9B8FF6B7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAB546E6-49B2-419D-9033-CF9B8FF6B7DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35E1B5B9-D4DA-443E-B766-52B0B14D680B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E1B5B9-D4DA-443E-B766-52B0B14D680B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E1B5B9-D4DA-443E-B766-52B0B14D680B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E1B5B9-D4DA-443E-B766-52B0B14D680B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
