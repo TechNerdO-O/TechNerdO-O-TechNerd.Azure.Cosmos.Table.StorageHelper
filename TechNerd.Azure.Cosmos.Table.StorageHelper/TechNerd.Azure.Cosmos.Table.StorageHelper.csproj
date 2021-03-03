@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>TechNerd.Azure.Cosmos.Table.StorageHelper</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.4.0</Version>
     <Authors>TechNerd</Authors>
     <Company>TechNerd</Company>
     <Description>An efficient helper SDK, which helps in CRUD operations on the azure storage tables.It can be simply injected in .Net core applications</Description>
@@ -12,7 +12,7 @@
     <PackageIcon>LogoWithText.png</PackageIcon>
     <RepositoryUrl>https://github.com/TechNerdO-O/TechNerdO-O-TechNerd.Azure.Cosmos.Table.StorageHelper</RepositoryUrl>
     <RepositoryType>Public</RepositoryType>
-    <PackageReleaseNotes>Adding support for Creating Entities.
+    <PackageReleaseNotes>Adding support for Deleting/Updating Entities.
 Verified with Unit testing</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>

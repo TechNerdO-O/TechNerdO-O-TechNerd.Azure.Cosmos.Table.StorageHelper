@@ -15,14 +15,7 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
 {
     public class ReadEntityTests
     {
-        private T GetInternalMember<T>(object obj, string propertyName)
-        {
-            Type objType = obj.GetType();
-            PropertyInfo propInfo = objType.GetProperty(propertyName,
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-            return (T)propInfo.GetValue(obj, null);
-        }
+        private readonly TestHelper _testHelper = new TestHelper();
         [Fact]
         public async Task Should_Use_InputPartionKeyandRowKey_AsSupplied()
         {
@@ -35,8 +28,8 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
                 op.ExecuteAsync(It.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve)))
                     .Callback<TableOperation>(e =>
                     {
-                        passedPartitionKey = GetInternalMember<string>(e, "RetrievePartitionKey");
-                        passedRowKey = GetInternalMember<string>(e, "RetrieveRowKey");
+                        passedPartitionKey = _testHelper.GetInternalMember<string>(e, "RetrievePartitionKey");
+                        passedRowKey = _testHelper.GetInternalMember<string>(e, "RetrieveRowKey");
                     })
                     .ReturnsAsync(new TableResult() { HttpStatusCode = (int)HttpStatusCode.OK, Result = new NullableEntity() });
             Mock<IStorageDBContext> mockDBContext = new Mock<IStorageDBContext>();
@@ -76,8 +69,8 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
                       , null);
             mockAzureTable.Setup(op =>
                 op.ExecuteAsync(It.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve
-                && (GetInternalMember<string>(x, "RetrievePartitionKey") != existingKey
-                || GetInternalMember<string>(x, "RetrieveRowKey") != existingKey))))
+                && (_testHelper.GetInternalMember<string>(x, "RetrievePartitionKey") != existingKey
+                || _testHelper.GetInternalMember<string>(x, "RetrieveRowKey") != existingKey))))
                     .ThrowsAsync(new Exception(mockExceptionMsg));
             Mock<IStorageDBContext> mockDBContext = new Mock<IStorageDBContext>();
             mockDBContext.Setup(op => op.GetTableAsync("users"))
@@ -99,8 +92,8 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Tests
                       , null);
             mockAzureTable.Setup(op =>
                 op.ExecuteAsync(It.Is<TableOperation>(x => x.OperationType == TableOperationType.Retrieve
-                && GetInternalMember<string>(x, "RetrievePartitionKey") == existingKey
-                && GetInternalMember<string>(x, "RetrieveRowKey") == existingKey)))
+                && _testHelper.GetInternalMember<string>(x, "RetrievePartitionKey") == existingKey
+                && _testHelper.GetInternalMember<string>(x, "RetrieveRowKey") == existingKey)))
                     .ReturnsAsync(new TableResult() { HttpStatusCode = (int)HttpStatusCode.OK, Result = new NullableEntity() { Id = existingKey } });
             Mock<IStorageDBContext> mockDBContext = new Mock<IStorageDBContext>();
             mockDBContext.Setup(op => op.GetTableAsync("users"))

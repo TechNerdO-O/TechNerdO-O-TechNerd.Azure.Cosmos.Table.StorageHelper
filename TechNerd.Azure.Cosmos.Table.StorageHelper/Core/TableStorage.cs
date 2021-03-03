@@ -115,38 +115,48 @@ namespace TechNerd.Azure.Cosmos.Table.StorageHelper.Core
         }
         public async Task<StorageActionResult> DeleteByIdAsync(string partitionKey, TKey id)
         {
-            var entity =
-                await this.ReadByIdAsync(partitionKey, id);
-
-            if (entity == null)
-                return new StorageActionResult(false,
-                new Error(HttpStatusCode.NotFound, "Id not found"));
-            DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
-            if (!dBContextResult.IsSuccess)
-                return new StorageActionResult(false, dBContextResult.Error);
-            CloudTable cloudTable = dBContextResult.Table;
-            var tableOperation =
-               TableOperation.Delete((ITableEntity)entity);
-            var tableResult =
-               await cloudTable.ExecuteAsync(tableOperation);
-
-            return tableResult.EnsureSuccessStatusCode();
+            StorageActionResult storageActionResult;
+            try
+            {
+                var readActionResult = await this.ReadByIdAsync(partitionKey, id);
+                if (!readActionResult.IsSuccess)
+                    return new StorageActionResult(false, readActionResult.Error);
+                DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+                if (!dBContextResult.IsSuccess)
+                    return new StorageActionResult(false, dBContextResult.Error);
+                CloudTable cloudTable = dBContextResult.Table;
+                var tableOperation = TableOperation.Delete(readActionResult.Entity);
+                var tableResult = await cloudTable.ExecuteAsync(tableOperation);
+                storageActionResult = tableResult.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                return new StorageActionResult(false, new Error(HttpStatusCode.BadRequest, string.Format(
+                    Constants.ErrorMessges.TableOperationFailure, ex.Message)));
+            }
+            return storageActionResult;
         }
 
 
         public async Task<StorageActionResult> Update(TEntity entity)
         {
-            DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
-            if (!dBContextResult.IsSuccess)
-                return new StorageActionResult(false, dBContextResult.Error);
-            CloudTable cloudTable = dBContextResult.Table;
-            var tableOperation =
-                 TableOperation.InsertOrReplace(entity);
-
-            var tableResult =
-                await cloudTable.ExecuteAsync(tableOperation);
-
-            return tableResult.EnsureSuccessStatusCode();
+            StorageActionResult storageActionResult;
+            try
+            {
+                DBContextResult dBContextResult = await _dbContext.GetTableAsync(_tableName);
+                if (!dBContextResult.IsSuccess)
+                    return new StorageActionResult(false, dBContextResult.Error);
+                CloudTable cloudTable = dBContextResult.Table;
+                var tableOperation = TableOperation.InsertOrReplace(entity);
+                var tableResult = await cloudTable.ExecuteAsync(tableOperation);
+                storageActionResult = tableResult.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                return new StorageActionResult(false, new Error(HttpStatusCode.BadRequest, string.Format(
+                        Constants.ErrorMessges.TableOperationFailure, ex.Message)));
+            }
+            return storageActionResult;
         }
 
 
